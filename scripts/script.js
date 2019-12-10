@@ -12,19 +12,28 @@ var myGameArea = {
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       },
+    stop: function() {
+        clearInterval(this.interval);
+      },
     
   };
 
   var myObstacles = [];
-
+  
 
   function updateGameArea() {
     myGameArea.clear();
     player.newPos();
     player.update();
-  };
+    updateObstacles();
+    // check if the game should stop
+    checkGameOver();
+  }
+
+
 
   class Component {
+
     constructor(width, height, color, x, y) {
       this.width = width;
       this.height = height;
@@ -34,6 +43,28 @@ var myGameArea = {
       this.speedX = 0;
       this.speedY = 0;
     }
+    left() {
+      return this.x;
+    }
+    right() {
+      return this.x + this.width;
+    }
+    top() {
+      return this.y;
+    }
+    bottom() {
+      return this.y + this.height;
+    }
+  
+    crashWith(obstacle) {
+      return !(
+        this.bottom() < obstacle.top() ||
+        this.top() > obstacle.bottom() ||
+        this.right() < obstacle.left() ||
+        this.left() > obstacle.right()
+      );
+    }
+
     newPos() {
         this.x += this.speedX;
         this.y += this.speedY;
@@ -45,7 +76,43 @@ var myGameArea = {
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
+
+  } // this is where the Component class ends
+  function checkGameOver() {
+    var crashed = myObstacles.some(function(obstacle) {
+      return player.crashWith(obstacle);
+    });
+  
+    if (crashed) {
+      myGameArea.stop();
+    }
   }
+
+
+  function updateObstacles() {
+    for (i = 0; i < myObstacles.length; i++) {
+      myObstacles[i].x += -1;
+      myObstacles[i].update();
+    }
+    myGameArea.frames += 1;
+    if (myGameArea.frames % 120 === 0) {
+      var x = myGameArea.canvas.width;
+      var minHeight = 20;
+      var maxHeight = 200;
+      var height = Math.floor(
+        Math.random() * (maxHeight - minHeight + 1) + minHeight
+      );
+      var minGap = 50;
+      var maxGap = 200;
+      var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+      myObstacles.push(new Component(10, height, "green", x, 0));
+      myObstacles.push(
+        new Component(10, x - height - gap, "green", x, height + gap)
+      );
+
+    }
+
+  };
 
 
   document.onkeydown = function(e) {
