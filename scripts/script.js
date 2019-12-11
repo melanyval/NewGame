@@ -6,7 +6,7 @@ var myGameArea = {
       this.canvas.width = 480;
       this.canvas.height = 270;
       this.context = this.canvas.getContext("2d");
-      document.body.insertBefore(this.canvas, document.body.childNodes[0])
+      document.body.append(this.canvas, document.body.childNodes[0])
       // call updateGameArea() every 20 milliseconds
       this.interval = setInterval(updateGameArea, 20); 
     }, 
@@ -26,6 +26,7 @@ var myGameArea = {
     player.newPos();
     player.update();
     updateObstacles();
+    boundaries();
     // check if the game should stop
     // checkGameOver();
   }
@@ -63,6 +64,7 @@ var myGameArea = {
         this.left() > obstacle.right()
       );
     }
+
 
     newPos() {
         this.x += this.speedX;
@@ -132,6 +134,23 @@ var myGameArea = {
       // );
     }
   };
+
+  function boundaries(){
+    if (player.x < 0){
+      player.x = 0
+    }
+    if (player.y < 0){
+      player.y = 0
+    }
+    if (player.x > myGameArea.canvas.width - 30){
+      console.log("too far to the right")
+      player.x = myGameArea.canvas.width - 30
+    }
+    if (player.y > myGameArea.canvas.height -30){
+      console.log("sdf")
+      player.y = myGameArea.canvas.height - 30
+    }
+  }
 
   document.onkeydown = function(e) {
         switch (e.keyCode) {

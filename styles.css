@@ -5,9 +5,11 @@ body {
 canvas {
     background-image: url("./images/pikachu.png"); 
     background-size: cover;
-    width: 80%;
+    width: 70vw;
+
 }
 
 .instructions {
+    width: 20vw;
     background: blue;
 }
