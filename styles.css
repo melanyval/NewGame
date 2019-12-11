@@ -1,0 +1,13 @@
+body {
+    display: flex;
+}
+
+canvas {
+    background-image: url("./images/pikachu.png"); 
+    background-size: cover;
+    width: 80%;
+}
+
+.instructions {
+    background: blue;
+}

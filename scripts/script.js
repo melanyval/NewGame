@@ -1,6 +1,7 @@
 var myGameArea = {
     canvas: document.createElement("canvas"),
     frames: 0,
+
     start: function() {
       this.canvas.width = 480;
       this.canvas.height = 270;
@@ -19,7 +20,6 @@ var myGameArea = {
   };
 
   var myObstacles = [];
-  
 
   function updateGameArea() {
     myGameArea.clear();
@@ -27,9 +27,8 @@ var myGameArea = {
     player.update();
     updateObstacles();
     // check if the game should stop
-    checkGameOver();
+    // checkGameOver();
   }
-
 
 
   class Component {
@@ -72,6 +71,8 @@ var myGameArea = {
   
     update() {
       var ctx = myGameArea.context;
+      // ctx.fillStyle = "https://opengameart.org/sites/default/files/player_19.png";
+      // ctx.fillStyle = ctx.createPattern("https://opengameart.org/sites/default/files/player_19.png", "no-repeat");
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
@@ -88,12 +89,32 @@ var myGameArea = {
     }
   }
 
-
   function updateObstacles() {
+
+    console.log('this is the x speed', player.speedX)
+    console.log('this is the y speed', player.speedY)
+
     for (i = 0; i < myObstacles.length; i++) {
-      myObstacles[i].x += -1;
+
+      console.log(myObstacles[i].x)
+
+      if (player.x < myObstacles[i].x) {
+        myObstacles[i].x -= 1;
+      } 
+      if (player.y < myObstacles[i].y){
+        myObstacles[i].y -= 1;
+      }      
+      if (player.x > myObstacles[i].x) {
+        myObstacles[i].x += 1;
+      } 
+      if (player.y > myObstacles[i].y){
+        myObstacles[i].y += 1;
+      }
+
       myObstacles[i].update();
     }
+
+
     myGameArea.frames += 1;
     if (myGameArea.frames % 120 === 0) {
       var x = myGameArea.canvas.width;
@@ -105,29 +126,26 @@ var myGameArea = {
       var minGap = 50;
       var maxGap = 200;
       var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-      myObstacles.push(new Component(10, height, "green", x, 0));
-      myObstacles.push(
-        new Component(10, x - height - gap, "green", x, height + gap)
-      );
-
+      myObstacles.push(new Component(10, 10, "green", x, height));
+      // myObstacles.push(
+      //   new Component(10, x - height - gap, "green", x, height + gap)
+      // );
     }
-
   };
-
 
   document.onkeydown = function(e) {
         switch (e.keyCode) {
           case 38: // up arrow
-            player.speedY -= 1;
+            player.speedY = -3;
             break;
           case 40: // down arrow
-            player.speedY += 1;
+            player.speedY = 3;
             break;
           case 37: // left arrow
-            player.speedX -= 1;
+            player.speedX = -3;
             break;
           case 39: // right arrow
-            player.speedX += 1;
+            player.speedX = 3;
             break;
         }
       };
@@ -137,7 +155,6 @@ var myGameArea = {
         player.speedY = 0;
       };
 
-  var player = new Component(30, 30, "blue", 0, 110);
+  var player = new Component(30, 30, "red", 0, 110);
 
   myGameArea.start();
-
