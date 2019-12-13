@@ -6,6 +6,7 @@ body {
     background-image: url("./images/zombieback.jpeg");
     font-family: monospace;
     font-size: 1.5em;
+    overflow: hidden;
 }
 
 canvas {
