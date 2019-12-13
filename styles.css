@@ -3,7 +3,7 @@ body {
 }
 
 canvas {
-    background-image: url("./images/pikachu.png"); 
+    background-image: url("./images/zombieback.jpeg"); 
     background-size: cover;
     width: 70vw;
 
@@ -11,5 +11,5 @@ canvas {
 
 .instructions {
     width: 20vw;
-    background: blue;
+    background:lightpink;
 }

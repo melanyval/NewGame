@@ -1,6 +1,7 @@
 var myGameArea = {
     canvas: document.createElement("canvas"),
     frames: 0,
+    score: 0,
 
     start: function() {
       this.canvas.width = 480;
@@ -22,22 +23,26 @@ var myGameArea = {
   var myObstacles = [];
 
   function updateGameArea() {
+    // console.log(player.health)
     myGameArea.clear();
     player.newPos();
     player.update();
     updateObstacles();
     boundaries();
+    updateScore();
     // check if the game should stop
-    // checkGameOver();
+    checkGameOver();
   }
 
 
   class Component {
 
-    constructor(width, height, color, x, y) {
+    constructor(health, width, height, color, x, y) {
+      this.health = health;
       this.width = width;
       this.height = height;
-      this.color = color;
+      this.img = new Image();
+      this.color = color
       this.x = x;
       this.y = y;
       this.speedX = 0;
@@ -70,6 +75,7 @@ var myGameArea = {
         this.x += this.speedX;
         this.y += this.speedY;
       }
+
   
     update() {
       var ctx = myGameArea.context;
@@ -77,6 +83,7 @@ var myGameArea = {
       // ctx.fillStyle = ctx.createPattern("https://opengameart.org/sites/default/files/player_19.png", "no-repeat");
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
+      // We will probably use drawImage() instead of fillRect
     }
 
 
@@ -86,34 +93,65 @@ var myGameArea = {
       return player.crashWith(obstacle);
     });
   
-    if (crashed) {
+    if (player.health < 1) {
       myGameArea.stop();
     }
   }
 
+  function updateScore(){
+    // console.log(myGameArea.frames)
+    let displayedScore = myGameArea.score.toFixed(0)
+    if (myGameArea.frames % 50) {
+      myGameArea.score += .02;
+    }
+    document.querySelector("body > div > p:nth-child(2) > span").innerHTML = displayedScore
+    console.log(displayedScore);
+  }
+
   function updateObstacles() {
 
-    console.log('this is the x speed', player.speedX)
-    console.log('this is the y speed', player.speedY)
+    // console.log(player.health)
+
+    // console.log('this is the x speed', player.speedX)
+    // console.log('this is the y speed', player.speedY)
 
     for (i = 0; i < myObstacles.length; i++) {
 
-      console.log(myObstacles[i].x)
+      // console.log(myObstacles[i].x)
 
       if (player.x < myObstacles[i].x) {
-        myObstacles[i].x -= 1;
+        myObstacles[i].x -= .6;
       } 
       if (player.y < myObstacles[i].y){
-        myObstacles[i].y -= 1;
+        myObstacles[i].y -= .6;
       }      
       if (player.x > myObstacles[i].x) {
-        myObstacles[i].x += 1;
+        myObstacles[i].x += .6;
       } 
       if (player.y > myObstacles[i].y){
-        myObstacles[i].y += 1;
+        myObstacles[i].y += .6;
       }
 
+      // console.log(player.x, player.y)
+      // console.log(myObstacles[i].x, myObstacles[i].y)
+
+      if (player.x < myObstacles[i].x 
+        && player.x + 20 > myObstacles[i].x
+        && player.y < myObstacles[i].y 
+        && player.y + 20 > myObstacles[i].y
+        ) {
+        player.health--
+        document.querySelector("body > div > p:nth-child(3) > span").innerHTML = player.health
+        console.log(player.health)
+      }
+      // if (player.y < myObstacles[i].y && player.y + 20 > myObstacles[i].y) {
+      //   player.health--
+      //   console.log(player.health)
+      // }
+
+
       myObstacles[i].update();
+    
     }
 
 
@@ -121,17 +159,28 @@ var myGameArea = {
     if (myGameArea.frames % 120 === 0) {
       var x = myGameArea.canvas.width;
       var minHeight = 20;
-      var maxHeight = 200;
+      var maxHeight = 320;
       var height = Math.floor(
         Math.random() * (maxHeight - minHeight + 1) + minHeight
       );
-      var minGap = 50;
-      var maxGap = 200;
-      var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-      myObstacles.push(new Component(10, 10, "green", x, height));
+      // var minGap = 50;
+      // var maxGap = 200;
+      // var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+      myObstacles.push(new Component(1, 10, 10, "green", x, height));
       // myObstacles.push(
       //   new Component(10, x - height - gap, "green", x, height + gap)
       // );
+    }
+    else if (myGameArea.frames % 100 === 0) {
+      console.log('spawned from somewhere else')
+      var maxWidth = 400;
+      var minWidth = 20;
+      var y = myGameArea.canvas.height;
+      var width = Math.floor(
+        Math.random() * (maxWidth - minWidth + 1)
+      );
+      var randomX = Math.floor(Math.random() * 200) + 100
+      myObstacles.push(new Component(1, 10, 10, "green", randomX, 300));
     }
   };
 
@@ -142,14 +191,13 @@ var myGameArea = {
     if (player.y < 0){
       player.y = 0
     }
-    if (player.x > myGameArea.canvas.width - 30){
-      console.log("too far to the right")
-      player.x = myGameArea.canvas.width - 30
+    if (player.x > myGameArea.canvas.width - 20){
+      player.x = myGameArea.canvas.width - 20
     }
-    if (player.y > myGameArea.canvas.height -30){
-      console.log("sdf")
-      player.y = myGameArea.canvas.height - 30
+    if (player.y > myGameArea.canvas.height -20){
+      player.y = myGameArea.canvas.height - 20
     }
+    
   }
 
   document.onkeydown = function(e) {
@@ -174,6 +222,8 @@ var myGameArea = {
         player.speedY = 0;
       };
 
-  var player = new Component(30, 30, "red", 0, 110);
+  var player = new Component(200, 20, 20, "black", 0, 110);
+
+
 
   myGameArea.start();
