@@ -1,15 +1,53 @@
 body {
     display: flex;
+    /* flex-direction: column; */
+    margin: 0 auto; 
+    margin-left: 5vw;
+    background-image: url("./images/zombieback.jpeg");
+    font-family: monospace;
+    font-size: 1.5em;
 }
 
 canvas {
-    background-image: url("./images/zombieback.jpeg"); 
+    background-image: url("./images/wallpaper.jpeg"); 
     background-size: cover;
     width: 70vw;
+    margin: 10vh 0;
 
 }
 
 .instructions {
     width: 20vw;
     background:lightpink;
+    margin: 10vh 0;
+
+}
+
+#myHealth {
+    width: 200px;
+    height: 20px;
+    background-color: goldenrod;
+    border-radius: 10px;
+}
+
+#myBar {
+    /* width: 200px; */
+    height: 20px;
+    background-color: yellow;
+    border-radius: 10px;
+}
+
+.game-over{
+    display: none;
+    position: absolute;
+    left: 48.87vw;
+    top: 30vh;
+    z-index: 69;
+}
+
+.title {
+    font-size: 4em;
+    position: absolute;
+    left: 40vw;
+    top: 70vh;
 }

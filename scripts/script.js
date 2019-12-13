@@ -15,6 +15,8 @@ var myGameArea = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       },
     stop: function() {
+        document.querySelector('.final-score').innerHTML = document.querySelector('.score').innerHTML
+        // document.querySelector('.final-score').style.removeProperty("display")
         clearInterval(this.interval);
       },
     
@@ -26,7 +28,8 @@ var myGameArea = {
     // console.log(player.health)
     myGameArea.clear();
     player.newPos();
-    player.update();
+    player.drawPlayer();
+    player.drawZombies();
     updateObstacles();
     boundaries();
     updateScore();
@@ -77,23 +80,39 @@ var myGameArea = {
       }
 
   
-    update() {
+    
+    // I split the old update function into two:
+
+    //drawPlayer represents the player
+    drawPlayer() {
       var ctx = myGameArea.context;
-      // ctx.fillStyle = "https://opengameart.org/sites/default/files/player_19.png";
-      // ctx.fillStyle = ctx.createPattern("https://opengameart.org/sites/default/files/player_19.png", "no-repeat");
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
-      // We will probably use drawImage() instead of fillRect
+
+      var img = new Image()
+      img.src = './images/minion.png'
+      ctx.drawImage(img, this.x, this.y, this.width, this.height);
     }
 
+    //drawZombies represents the enemies
+    drawZombies() {
+      var ctx = myGameArea.context;
 
-  } // this is where the Component class ends
+      var img = new Image()
+      img.src = './images/zombie.gif'
+      ctx.drawImage(img, this.x, this.y, this.width, this.height);
+    }
+
+} // this is where the Component class ends
+
+
+     // this is where the Component class ends
   function checkGameOver() {
     var crashed = myObstacles.some(function(obstacle) {
       return player.crashWith(obstacle);
     });
   
     if (player.health < 1) {
+      player.health = 0;
+      window.alert(`Game over! You scored ${document.querySelector(".score").innerHTML} points`)
       myGameArea.stop();
     }
   }
@@ -104,7 +123,7 @@ var myGameArea = {
     if (myGameArea.frames % 50) {
       myGameArea.score += .02;
     }
-    document.querySelector("body > div > p:nth-child(2) > span").innerHTML = displayedScore
+    document.querySelector(".score").innerHTML = displayedScore
     console.log(displayedScore);
   }
 
@@ -136,12 +155,13 @@ var myGameArea = {
       // console.log(myObstacles[i].x, myObstacles[i].y)
 
       if (player.x < myObstacles[i].x 
-        && player.x + 20 > myObstacles[i].x
+        && player.x + player.width > myObstacles[i].x
         && player.y < myObstacles[i].y 
-        && player.y + 20 > myObstacles[i].y
+        && player.y + player.height > myObstacles[i].y
         ) {
         player.health--
-        document.querySelector("body > div > p:nth-child(3) > span").innerHTML = player.health
+        document.querySelector(".health").innerHTML = player.health
+        // document.querySelector("#myBar").style.width = player.health
         console.log(player.health)
       }
       // if (player.y < myObstacles[i].y && player.y + 20 > myObstacles[i].y) {
@@ -149,8 +169,7 @@ var myGameArea = {
       //   console.log(player.health)
       // }
 
-
-      myObstacles[i].update();
+      myObstacles[i].drawZombies();
     
     }
 
@@ -163,10 +182,12 @@ var myGameArea = {
       var height = Math.floor(
         Math.random() * (maxHeight - minHeight + 1) + minHeight
       );
+      let random = Math.floor(Math.random() * 20) + 10
+      console.log(random)
       // var minGap = 50;
       // var maxGap = 200;
       // var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-      myObstacles.push(new Component(1, 10, 10, "green", x, height));
+      myObstacles.push(new Component(1, random, random, "green", x, height));
       // myObstacles.push(
       //   new Component(10, x - height - gap, "green", x, height + gap)
       // );
@@ -179,8 +200,9 @@ var myGameArea = {
       var width = Math.floor(
         Math.random() * (maxWidth - minWidth + 1)
       );
+      let random = Math.floor(Math.random() * 20) + 10
       var randomX = Math.floor(Math.random() * 200) + 100
-      myObstacles.push(new Component(1, 10, 10, "green", randomX, 300));
+      myObstacles.push(new Component(1, random, random, "green", randomX, 300));
     }
   };
 
@@ -191,13 +213,13 @@ var myGameArea = {
     if (player.y < 0){
       player.y = 0
     }
-    if (player.x > myGameArea.canvas.width - 20){
-      player.x = myGameArea.canvas.width - 20
+    if (player.x > myGameArea.canvas.width - player.width){
+      player.x = myGameArea.canvas.width - player.width
     }
-    if (player.y > myGameArea.canvas.height -20){
-      player.y = myGameArea.canvas.height - 20
+    if (player.y > myGameArea.canvas.height -player.height){
+      player.y = myGameArea.canvas.height - player.height
     }
-    
+
   }
 
   document.onkeydown = function(e) {
@@ -222,7 +244,7 @@ var myGameArea = {
         player.speedY = 0;
       };
 
-  var player = new Component(200, 20, 20, "black", 0, 110);
+  var player = new Component(200, 30, 30, "black", 0, 110);
 
 
 
