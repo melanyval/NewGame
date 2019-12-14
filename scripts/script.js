@@ -28,7 +28,7 @@ var myGameArea = {
     // console.log(player.health)
     myGameArea.clear();
     player.newPos();
-    player.drawZombies();
+    // player.drawZombies();
     player.drawPlayer();
     updateObstacles();
     boundaries();
