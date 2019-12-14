@@ -86,9 +86,8 @@ var myGameArea = {
     //drawPlayer represents the player
     drawPlayer() {
       var ctx = myGameArea.context;
-
       var img = new Image()
-      img.src = './images/minion.png'
+      img.src = './images/newpla.png'
       ctx.drawImage(img, this.x, this.y, this.width, this.height);
     }
 
