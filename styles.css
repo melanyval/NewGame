@@ -11,7 +11,8 @@ body {
 }
 
 canvas {
-    background-image: url("./images/newback.png"); 
+    /* background-image: url("./images/newback.png");  */
+    background-color: blanchedalmond;
     background-size: cover;
     width: 70vw;
     margin: 10vh 0;
